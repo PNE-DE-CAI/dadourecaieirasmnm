@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Rolador de Dados D6 · Grupos A e B</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #0a2f6c 0%, #041a3a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        :root {
+            --azul-escuro: #0a2f6c;
+            --azul-claro: #eef3fb;
+            --vermelho: #d32f2f;
+            --branco: #ffffff;
+            --preto: #212121;
+            --cinza-borda: #e0e4e9;
+        }
+
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background: #0f1a24;
+            border-radius: 48px;
+            padding: 20px;
+            box-shadow: 0 30px 35px rgba(0,0,0,0.5), inset 0 1px 4px rgba(255,255,200,0.1);
+            border: 1px solid var(--vermelho);
+        }
+
+        /* Header com logo */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0a2f6ccc;
+            backdrop-filter: blur(4px);
+            padding: 12px 24px;
+            border-radius: 60px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-area img {
+            max-height: 50px;
+            width: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .logo-area span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffec9e;
+        }
+
+        .title-badge {
+            background: var(--vermelho);
+            color: white;
+            padding: 6px 18px;
+            border-radius: 3rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* Layout dos grupos */
+        .groups-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .group-card {
+            background: #1a2a3a;
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: inset 0 0 0 2px #2c4c6e, 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--vermelho);
+        }
+
+        .group-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffec9e;
+            letter-spacing: 2px;
+        }
+
+        .group-title i {
+            margin-right: 8px;
+            color: var(--vermelho);
+        }
+
+        .roll-counter {
+            background: #0a2f6c99;
+            padding: 5px 12px;
+            border-radius: 40px;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        /* Área do dado e resultado */
+        .dice-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .dice-icon {
+            font-size: 7rem;
+            color: white;
+            text-shadow: 0 8px 12px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+        }
+
+        .result-box {
+            background: #0f1a24;
+            border-radius: 60px;
+            padding: 15px 30px;
+            text-align: center;
+            border: 1px solid var(--cinza-borda);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2), 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: #b4c8e0;
+            letter-spacing: 1px;
+        }
+
+        .result-value {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--vermelho);
+            line-height: 1;
+            text-shadow: 2px 2px 0 #ffec9e;
+        }
+
+        .roll-btn {
+            background: linear-gradient(135deg, #0a2f6c, #052050);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.07s linear;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 0 #03102a;
+            margin-top: 10px;
+        }
+
+        .roll-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #03102a;
+        }
+
+        .roll-btn i {
+            font-size: 1.3rem;
+        }
+
+        .reset-all {
+            background: linear-gradient(135deg, #2c3e50, #1a2a3a);
+            box-shadow: 0 6px 0 #0f1a24;
+            margin-top: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .history {
+            margin-top: 20px;
+            background: #0a2f6c99;
+            border-radius: 30px;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #ffec9e;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #b4c8e0;
+        }
+
+        @media (max-width: 650px) {
+            .game-container {
+                padding: 12px;
+            }
+            .dice-icon {
+                font-size: 4rem;
+            }
+            .result-value {
+                font-size: 2.8rem;
+            }
+            .group-title {
+                font-size: 1.3rem;
+            }
+            .roll-btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        .shake {
+            animation: shake 0.3s ease-in-out 0s 2;
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="header">
+        <div class="logo-area">
+            <img src="https://i.ibb.co/0p01LzxB/logo3de.jpg" alt="Logo SEDUC">
+            <span>Rolador D6</span>
+        </div>
+        <div class="title-badge">
+            <i class="fas fa-dice-d6"></i> Grupos A e B
+        </div>
+    </div>
+
+    <div class="groups-layout">
+        <!-- Grupo A -->
+        <div class="group-card">
+            <div class="group-header">
+                <div class="group-title">
+                    <i class="fas fa-users"></i> GRUPO A
+                </div>
+                <div class="roll-counter" id="counterA">🎲 Rolagens: 0</div>
+            </div>
+            <div class="dice-area">
+                <div class="dice-icon" id="diceIconA">
+                    <i class="fas fa-dice-d6"></i>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">ÚLTIMO RESULTADO</div>
+                    <div class="result-value" id="resultA">—</div>
+                </div>
+                <button class="roll-btn" id="rollBtnA">
+                    <i class="fas fa-dice-d6"></i> Rolar Dado
+                </button>
+            </div>
+            <div class="history" id="historyA">
+                <i class="fas fa-clock"></i> Histórico: nenhum
+            </div>
+        </div>
+
+        <!-- Grupo B -->
+        <div class="group-card">
+            <div class="group-header">
+                <div class="group-title">
+                    <i class="fas fa-users"></i> GRUPO B
+                </div>
+                <div class="roll-counter" id="counterB">🎲 Rolagens: 0</div>
+            </div>
+            <div class="dice-area">
+                <div class="dice-icon" id="diceIconB">
+                    <i class="fas fa-dice-d6"></i>
+                </div>
+                <div class="result-box">
+                    <div class="result-label">ÚLTIMO RESULTADO</div>
+                    <div class="result-value" id="resultB">—</div>
+                </div>
+                <button class="roll-btn" id="rollBtnB">
+                    <i class="fas fa-dice-d6"></i> Rolar Dado
+                </button>
+            </div>
+            <div class="history" id="historyB">
+                <i class="fas fa-clock"></i> Histórico: nenhum
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 10px;">
+        <button class="roll-btn reset-all" id="resetAllBtn">
+            <i class="fas fa-undo-alt"></i> Resetar todos os grupos
+        </button>
+    </div>
+    <footer>
+        Clique em "Rolar Dado" para jogar um D6. Cada grupo tem seu próprio dado e histórico.
+    </footer>
+</div>
+
+<script>
+    // Estado dos grupos
+    let groupA = {
+        rolls: [],
+        lastResult: null,
+        count: 0
+    };
+    let groupB = {
+        rolls: [],
+        lastResult: null,
+        count: 0
+    };
+
+    // Elementos DOM
+    const resultADiv = document.getElementById('resultA');
+    const resultBDiv = document.getElementById('resultB');
+    const historyADiv = document.getElementById('historyA');
+    const historyBDiv = document.getElementById('historyB');
+    const counterADiv = document.getElementById('counterA');
+    const counterBDiv = document.getElementById('counterB');
+    const diceIconA = document.getElementById('diceIconA');
+    const diceIconB = document.getElementById('diceIconB');
+    const rollBtnA = document.getElementById('rollBtnA');
+    const rollBtnB = document.getElementById('rollBtnB');
+    const resetAllBtn = document.getElementById('resetAllBtn');
+
+    // Função para rolar um D6 (1 a 6)
+    function rollD6() {
+        return Math.floor(Math.random() * 6) + 1;
+    }
+
+    // Função para atualizar a interface de um grupo
+    function updateGroupUI(group, groupName) {
+        const resultDiv = groupName === 'A' ? resultADiv : resultBDiv;
+        const historyDiv = groupName === 'A' ? historyADiv : historyBDiv;
+        const counterDiv = groupName === 'A' ? counterADiv : counterBDiv;
+
+        // Atualiza último resultado
+        if (group.lastResult !== null) {
+            resultDiv.innerText = group.lastResult;
+        } else {
+            resultDiv.innerText = '—';
+        }
+
+        // Atualiza contador
+        counterDiv.innerHTML = `🎲 Rolagens: ${group.count}`;
+
+        // Atualiza histórico (últimos 5)
+        if (group.rolls.length === 0) {
+            historyDiv.innerHTML = '<i class="fas fa-clock"></i> Histórico: nenhum';
+        } else {
+            const lastRolls = group.rolls.slice(-5).reverse();
+            historyDiv.innerHTML = `<i class="fas fa-history"></i> Histórico: ${lastRolls.join(' · ')}`;
+        }
+    }
+
+    // Função para adicionar animação de shake
+    function animateDice(groupName) {
+        const iconDiv = groupName === 'A' ? diceIconA : diceIconB;
+        iconDiv.classList.add('shake');
+        setTimeout(() => {
+            iconDiv.classList.remove('shake');
+        }, 300);
+    }
+
+    // Função para realizar rolagem em um grupo
+    function rollForGroup(groupName) {
+        const group = groupName === 'A' ? groupA : groupB;
+        const newValue = rollD6();
+        
+        // Atualiza estado
+        group.lastResult = newValue;
+        group.rolls.unshift(newValue);
+        if (group.rolls.length > 10) group.rolls.pop(); // mantém máximo 10 para histórico
+        group.count++;
+        
+        // Atualiza UI
+        updateGroupUI(group, groupName);
+        
+        // Animação
+        animateDice(groupName);
+        
+        // Feedback visual no botão (opcional)
+        const btn = groupName === 'A' ? rollBtnA : rollBtnB;
+        btn.style.transform = 'scale(0.98)';
+        setTimeout(() => { btn.style.transform = ''; }, 100);
+    }
+
+    // Resetar um grupo específico
+    function resetGroup(groupName) {
+        if (groupName === 'A') {
+            groupA = { rolls: [], lastResult: null, count: 0 };
+            updateGroupUI(groupA, 'A');
+        } else {
+            groupB = { rolls: [], lastResult: null, count: 0 };
+            updateGroupUI(groupB, 'B');
+        }
+    }
+
+    // Resetar todos os grupos
+    function resetAll() {
+        resetGroup('A');
+        resetGroup('B');
+    }
+
+    // Event listeners
+    rollBtnA.addEventListener('click', () => rollForGroup('A'));
+    rollBtnB.addEventListener('click', () => rollForGroup('B'));
+    resetAllBtn.addEventListener('click', resetAll);
+
+    // Inicialização
+    updateGroupUI(groupA, 'A');
+    updateGroupUI(groupB, 'B');
+</script>
+</body>
+</html>
